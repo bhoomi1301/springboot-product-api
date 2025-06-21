@@ -4,7 +4,7 @@ import com.javatechie.crud.example.entity.Product;
 import com.javatechie.crud.example.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
@@ -46,5 +46,10 @@ public class ProductController {
     @DeleteMapping("/delete/{id}")
     public String deleteProduct(@PathVariable int id) {
         return service.deleteProduct(id);
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Product Service is up and running");
     }
 }
