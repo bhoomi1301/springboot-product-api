@@ -1,0 +1,14 @@
+# Ignore build output and dependencies
+/target/
+*.jar
+*.class
+*.log
+
+# IDE specific
+.idea/
+*.iml
+.vscode/
+
+# OS-specific
+Thumbs.db
+.DS_Store
