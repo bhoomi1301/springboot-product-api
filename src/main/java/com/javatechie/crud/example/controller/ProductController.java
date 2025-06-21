@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ProductController {
@@ -52,4 +53,12 @@ public class ProductController {
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("Product Service is up and running");
     }
+
+    @GetMapping("/products/search")
+    public List<Product> searchProducts(@RequestParam String keyword) {
+        return service.getProducts().stream()
+            .filter(p -> p.getName().toLowerCase().contains(keyword.toLowerCase()))
+            .collect(Collectors.toList());
+    }
+
 }
