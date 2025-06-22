@@ -72,6 +72,10 @@ jobs:
         run: |
           kubectl apply -f k8s-manifests/ingress.yaml
 
+      - name: ⏳ Wait for Deployment to be ready
+        run: |
+          kubectl rollout status deployment/product-deployment -n product-v1 --timeout=90s
+
       - name: 🔌 Port Forward Ingress
         run: |
           nohup kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8888:80 > port-forward.log 2>&1 &
@@ -79,5 +83,5 @@ jobs:
 
       - name: 🧪 Run Integration Test
         run: |
-          echo "Running integration test against /v1/health..."
+          echo "Running integration test..."
           curl --fail http://localhost:8888/v1/health

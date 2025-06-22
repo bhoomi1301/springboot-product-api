@@ -55,7 +55,7 @@ public class ProductController {
         return ResponseEntity.ok("Product Service is up and running");
     }
 
-    // ✅ Advanced Search (v2.0.0)
+    // Advanced Search (v2.0.0)
     @GetMapping("/products/search")
     public ResponseEntity<?> searchProducts(
             @RequestParam(required = false) String keyword,
