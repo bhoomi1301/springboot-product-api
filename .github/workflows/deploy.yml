@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,3 +34,38 @@ jobs:
           context: .
           push: true
           tags: bhoomi1311/springboot-product-api:latest
+
+      - name: ⚙️ Set up kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+
+      - name: ⚡ Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: latest
+
+      - name: 🚀 Deploy to Kubernetes (v1)
+        run: |
+          kubectl apply -f k8s-manifests/namespace-v1.yaml
+          kubectl apply -f k8s-manifests/deployment-v1.yaml
+          kubectl apply -f k8s-manifests/service-v1.yaml
+          kubectl apply -f k8s-manifests/hpa-v1.yaml
+
+      - name: 🚀 Deploy to Kubernetes (v1.1)
+        run: |
+          kubectl apply -f k8s-manifests/namespace-v1-1.yaml
+          kubectl apply -f k8s-manifests/deployment-v1-1.yaml
+          kubectl apply -f k8s-manifests/service-v1-1.yaml
+          kubectl apply -f k8s-manifests/hpa-v1-1.yaml
+
+      - name: 🚀 Deploy to Kubernetes (v2)
+        run: |
+          kubectl apply -f k8s-manifests/namespace-v2.yaml
+          kubectl apply -f k8s-manifests/deployment-v2.yaml
+          kubectl apply -f k8s-manifests/service-v2.yaml
+          kubectl apply -f k8s-manifests/hpa-v2.yaml
+
+      - name: 🌐 Apply Ingress
+        run: |
+          kubectl apply -f k8s-manifests/ingress.yaml
