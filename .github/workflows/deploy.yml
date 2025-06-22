@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  build-push-deploy-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,3 +36,48 @@ jobs:
           tags: |
             bhoomi1311/springboot-product-api:latest
             bhoomi1311/springboot-product-api:${{ github.sha }}
+
+      - name: ⚙️ Set up kubeconfig from secret
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
+
+      - name: ⚡ Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: latest
+
+      - name: 🚀 Deploy to Kubernetes (v1)
+        run: |
+          kubectl apply -f k8s-manifests/namespace-v1.yaml
+          kubectl apply -f k8s-manifests/deployment-v1.yaml
+          kubectl apply -f k8s-manifests/service-v1.yaml
+          kubectl apply -f k8s-manifests/hpa-v1.yaml
+
+      - name: 🚀 Deploy to Kubernetes (v1.1)
+        run: |
+          kubectl apply -f k8s-manifests/namespace-v1-1.yaml
+          kubectl apply -f k8s-manifests/deployment-v1-1.yaml
+          kubectl apply -f k8s-manifests/service-v1-1.yaml
+          kubectl apply -f k8s-manifests/hpa-v1-1.yaml
+
+      - name: 🚀 Deploy to Kubernetes (v2)
+        run: |
+          kubectl apply -f k8s-manifests/namespace-v2.yaml
+          kubectl apply -f k8s-manifests/deployment-v2.yaml
+          kubectl apply -f k8s-manifests/service-v2.yaml
+          kubectl apply -f k8s-manifests/hpa-v2.yaml
+
+      - name: 🌐 Apply Ingress
+        run: |
+          kubectl apply -f k8s-manifests/ingress.yaml
+
+      - name: 🔌 Port Forward Ingress
+        run: |
+          nohup kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8888:80 > port-forward.log 2>&1 &
+          sleep 10
+
+      - name: 🧪 Run Integration Test
+        run: |
+          echo "Running integration test against /v1/health..."
+          curl --fail http://localhost:8888/v1/health
