@@ -35,10 +35,9 @@ jobs:
           push: true
           tags: bhoomi1311/springboot-product-api:latest
 
-      - name: ⚙️ Set up kubeconfig
+      - name: ⚙️ Set up kubeconfig from secret
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
 
       - name: ⚡ Install kubectl
         uses: azure/setup-kubectl@v3
