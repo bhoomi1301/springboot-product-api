@@ -7,7 +7,8 @@ spec:
   selector:
     app: product-api
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 9191
-  type: NodePort
+    - protocol: TCP
+      port: 80       # External port
+      targetPort: 9191   # Internal container port
+  type: ClusterIP
+

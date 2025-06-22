@@ -6,8 +6,9 @@ metadata:
 spec:
   selector:
     app: product-api
-  type: NodePort
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 9191
+      port: 80       # External port
+      targetPort: 9191   # Internal container port
+  type: ClusterIP
+
